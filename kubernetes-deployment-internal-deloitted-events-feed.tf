@@ -23,7 +23,7 @@ resource "kubernetes_deployment" "deloitted-internal-events-feed-deployment" {
       }
       spec {
         container {
-          image = "gcr.io/mar-roidtc315/internal-image:v1.0.0"
+          image = "gcr.io/mar-roidtc321/internal-image:v1.0.0"
           name  = "deloitted-internal-events-feed"
 
           port {
