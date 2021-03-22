@@ -1,5 +1,5 @@
 # GCP Settings
-project_id   = "mar-roidtc321" # Enter your project ID here.
+project_id   = "methodical-aura-308217" # Enter your project ID here.
 gcp_region_1 = "us-central1"
 gcp_zone_1   = "us-central1-a"
 

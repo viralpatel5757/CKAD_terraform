@@ -23,7 +23,7 @@ resource "kubernetes_deployment" "deloitted-external-events-feed-deployment" {
       }
       spec {
         container {
-          image = "gcr.io/mar-roidtc321/external-image:v2.0.0"
+          image = "gcr.io/methodical-aura-308217/external-new-image:v1."
           name  = "deloitted-external-events-feed"
 
           env {

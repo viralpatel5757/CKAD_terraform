@@ -1,4 +1,4 @@
-def projectId = "mar-roidtc321"
+def projectId = "methodical-aura-308217"
 
 pipeline {
    agent any
@@ -69,10 +69,10 @@ pipeline {
         stage('Stage 5') {
             steps {
                 echo 'Get cluster credentials'
-                sh 'gcloud container clusters get-credentials cluster-1 --zone us-central1-c --project mar-roidtc321'
+                sh 'gcloud container clusters get-credentials cluster-1 --zone us-central1-c --project methodical-aura-308217'
                 echo 'Update the image'
-                echo "gcr.io/mar-roidtc321/internal-new-image:2.${env.BUILD_ID}"
-                sh "kubectl set image deployment/events-external events-external=gcr.io/mar-roidtc321/internal-new-image:v2.${env.BUILD_ID} --record"
+                echo "gcr.io/methodical-aura-308217/internal-new-image:2.${env.BUILD_ID}"
+                sh "kubectl set image deployment/events-external events-external=gcr.io/methodical-aura-308217/internal-new-image:v2.${env.BUILD_ID} --record"
             }
         }
 
