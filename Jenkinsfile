@@ -1,15 +1,28 @@
 def projectId = "methodical-aura-308217"
 
 pipeline {
+    environment {
+        registry = "viralpatel5757/external-new-image"
+        registryCredential = 'viralpatel5757'
+        app = ''
+    }
+    
    agent any
 
    stages {
-       stage('stage 1 : SCM') {
-            steps {
-                git url: 'https://github.com/viralpatel5757/deloitted_external.git'
+    //   stage('stage 1 : SCM') {
+    //         steps {
+    //             git url: 'https://github.com/viralpatel5757/deloitted_external.git'
+    //         }
+    //     }
+        stage('stage-1 :Cloning our Git') {
+          steps {
+              echo '****************************** Stage 1'
+              dir("${env.WORKSPACE}/external") {
+               git 'https://github.com/viralpatel5757/deloitted_external.git'
+                }
             }
         }
-        
     
       stage("stage 2 : SonarQube Analysis") {
           
@@ -22,8 +35,44 @@ pipeline {
                 }
             }
         }
+        
+        
 
-        stage('Stage 3 - workspace and versions') {
+        stage('stage-3 :Initialize') {
+          steps{
+              echo '****************************** Stage 2'
+              dir("${env.WORKSPACE}/external") {
+                    script {
+                        def dockerHome = tool 'myDocker'
+                        env.PATH = "${dockerHome}/bin:${env.PATH}"
+                    }    
+                }
+            }    
+        }
+
+        stage('stage-4 :Building our image') {
+          steps{
+              echo '****************************** Stage 3'
+              dir("${env.WORKSPACE}/external") {
+                 script {
+                      app = docker.build registry + ":$BUILD_NUMBER"
+                    //   sh "sudo -S docker build -t viralpatel5757/external-new-image:$BUILD_NUMBER ."
+                    }   
+                }
+            }
+        }
+
+        stage('stage-5 :Deploy our image') {
+            steps{
+                echo '****************************** Stage 4'
+                script {
+                    docker.withRegistry( 'https://registry.hub.docker.com', 'docker-hub-credentials' ) {
+                    app.push("${env.BUILD_NUMBER}")                    }
+                }
+            }
+        }
+
+        stage('Stage 6 - workspace and versions') {
             steps {
                 sh 'echo $WORKSPACE'
                 //sh 'docker --version'
@@ -33,7 +82,7 @@ pipeline {
             }
         }
 
-        stage('Stage 4 - build external') {
+        stage('Stage 7 - build external') {
             // setting env variable so external default port does not conflict with jenkins
             environment {
                 PORT = 8081
@@ -55,7 +104,7 @@ pipeline {
                 }
             }
         }
-        stage('Stage 5 - build internal') {
+        stage('Stage 8 - build internal') {
             steps {
                 dir("${env.WORKSPACE}/internal"){
                   echo 'Retrieving source from github' 
@@ -86,7 +135,7 @@ pipeline {
             
         // }
 
-        stage('Stage 7') {
+        stage('Stage 9') {
             steps {
                 echo 'Get cluster credentials'
                 sh 'gcloud container clusters get-credentials deloitted-events-feed-cluster --zone us-central1-a --project methodical-aura-308217'
@@ -103,3 +152,5 @@ pipeline {
 
    }
 }
+    
+    
